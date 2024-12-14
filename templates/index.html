@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieRec</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Discover Personalized Movie Recommendations</h2>
+            <p>Find your next favorite movie with MovieRec!</p>
+            <div class="filters">
+                <form id="movieForm" action="javascript:void(0);">
+                    <select name="movie" id="movieSelect" required>
+                        <option value="">Select a Movie that you Like to Recommend Similar Movies</option>
+                        {% for movie in movies %}
+                        <option value="{{ movie }}">{{ movie }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" id="recommendButton" onclick="fetchRecommendations()">Search</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Recommended Movies Section -->
+        <section class="recommended" id="recommendations-section" style="display: none;">
+            <h1 id="recommendation-title"></h1>
+            <div id="recommendation-rows"></div>
+        </section>
+
+        <!-- Popup Container -->
+        <div id="movie-popup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <button class="close-btn" onclick="closePopup()">Close</button>
+                <div class="popup-body">
+                    <img id="popup-poster" src="" alt="Movie Poster">
+                    <div class="popup-details">
+                        <h2 id="popup-title"></h2>
+                        <p id="popup-overview"></p>
+                        <p><strong>Release Date:</strong> <span id="popup-release-date"></span></p>
+                        <p><strong>Genres:</strong> <span id="popup-genres"></span></p>
+                        <p><strong>Director:</strong> <span id="popup-director"></span></p>
+                        <p><strong>Cast:</strong> <span id="popup-cast"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <div id="loading-dialog" class="loading-dialog" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading recommendations...</p>
+    </div>
+
+    <script>
+        function fetchRecommendations() {
+            const movieName = document.getElementById('movieSelect').value;
+
+            if (!movieName) {
+                alert("Please select a movie before proceeding.");
+                return;
+            }
+
+            const loadingDialog = document.getElementById('loading-dialog');
+            loadingDialog.style.display = 'flex';
+
+            const button = document.getElementById('recommendButton');
+            button.disabled = true;
+            button.textContent = "Loading...";
+
+            const formData = new FormData();
+            formData.append('movie', movieName);
+
+            fetch('/recommend', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to fetch recommendations.");
+                    return response.json();
+                })
+                .then(data => {
+                    button.disabled = false;
+                    button.textContent = "Search";
+                    loadingDialog.style.display = 'none';
+
+                    const recommendationRows = document.getElementById('recommendation-rows');
+                    recommendationRows.innerHTML = '';
+
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        data.recommendations.forEach(row => {
+                            const rowElement = document.createElement('div');
+                            rowElement.classList.add('slider-row');
+                            rowElement.innerHTML = `
+                                <h2>${row.title}</h2>
+                                <div class="slider">
+                                    ${row.movies.map(movie => `
+                                        <div class="movie-card" onclick="openPopup('${movie.name}')">
+                                            <img src="${movie.poster}" alt="${movie.name}">
+                                            <p>${movie.name}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                            recommendationRows.appendChild(rowElement);
+                        });
+
+                        document.getElementById('recommendations-section').style.display = 'block';
+                        document.getElementById('recommendation-title').textContent = `Recommendations for "${data.movie_name}"`;
+
+                        // Scroll to recommendations section
+                        document.getElementById('recommendations-section').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert("No recommendations found for this movie.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    button.disabled = false;
+                    button.textContent = "Recommend";
+                    loadingDialog.style.display = 'none';
+                    alert("Failed to fetch recommendations. Please try again.");
+                });
+        }
+
+        function openPopup(movieName) {
+            fetch(`/details/${encodeURIComponent(movieName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('popup-title').textContent = data.title || "N/A";
+                    document.getElementById('popup-overview').textContent = data.overview || "N/A";
+                    document.getElementById('popup-release-date').textContent = data.release_date || "N/A";
+                    document.getElementById('popup-genres').textContent = Array.isArray(data.genres)
+                        ? data.genres.join(", ")
+                        : data.genres || "N/A";
+                    document.getElementById('popup-director').textContent = data.director || "N/A";
+                    document.getElementById('popup-cast').textContent = Array.isArray(data.cast)
+                        ? data.cast.join(", ")
+                        : data.cast || "N/A";
+                    document.getElementById('popup-poster').src = data.poster || "/static/images/default-poster.jpg";
+
+                    document.getElementById('movie-popup').style.display = 'flex';
+
+                    // Add event listener to close popup when clicking outside
+                    document.addEventListener('click', closePopupOnOutsideClick);
+                })
+                .catch(error => {
+                    console.error('Error fetching movie details:', error);
+                    alert('Failed to fetch movie details. Please try again later.');
+                });
+        }
+
+        function closePopup() {
+            document.getElementById('movie-popup').style.display = 'none';
+            document.removeEventListener('click', closePopupOnOutsideClick);
+        }
+
+        function closePopupOnOutsideClick(event) {
+            const popup = document.querySelector('.popup-content');
+            if (!popup.contains(event.target)) {
+                closePopup();
+            }
+        }
+    </script>
+</body>
+</html>

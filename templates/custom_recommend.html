@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Custom Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Custom Movie Recommendations</h1>
+    <form action="/custom_recommend_result" method="post">
+        <label for="liked_movies">Select Liked Movies:</label>
+        <select name="liked_movies" id="liked_movies" multiple size="10">
+            {% for movie in movies %}
+                <option value="{{ movie }}">{{ movie }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="genre">Select Genre:</label>
+        <select name="genre" id="genre">
+            {% for genre_id, genre_name in genres.items() %}
+                <option value="{{ genre_name }}">{{ genre_name }}</option>
+            {% endfor %}
+        </select>
+        
+        <br>
+
+        <label for="mood">Select Mood:</label>
+        <select name="mood" id="mood">
+            <option value="happy">Happy</option>
+            <option value="sad">Sad</option>
+            <option value="adventurous">Adventurous</option>
+            <option value="excited">Excited</option>
+            <option value="calm">Calm</option>
+        </select><br>
+
+        <button type="submit">Get Recommendations</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,292 @@
+/* Root Variables for Dark Theme */
+:root {
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --text-color: #ffffff;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --overlay-color: rgba(0, 0, 0, 0.8);
+    --scrollbar-color: #555555;
+    --scrollbar-thumb-color: #888888;
+}
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1f1f1f;
+    padding: 1rem;
+}
+
+.navbar h1 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.hero {
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: url('/static/images/hero-bg.png'); /* Update with your image path */
+    background-size: cover; /* Ensure the background image covers the full section */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat;
+    background-color: var(--overlay-color); /* Fallback for when the image is unavailable */
+    position: relative;
+}
+
+/* Optional: Add a semi-transparent overlay over the background */
+/* .hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); 
+    z-index: 0; 
+} */
+
+/* Hero content styling */
+.hero h2 {
+    font-size: 3rem; /* Larger font for the headline */
+    color: var(--primary-color);
+    z-index: 1; /* Ensure content is above the overlay */
+}
+
+.hero p {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    z-index: 1;
+}
+
+
+/* Filters Section */
+.filters form {
+    display: inline-flex;
+    gap: 1rem;
+}
+
+
+.filters select,
+.filters button {
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+}
+
+.filters select {
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+
+.filters button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filters button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Recommendations Section */
+.recommended {
+    padding: 2rem;
+}
+
+.recommended h1 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Slider Row */
+.slider-row {
+    margin: 20px 0;
+}
+
+.slider-row h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.slider {
+    display: flex;
+    gap: 15px; /* Space between cards */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrolling */
+    padding: 10px 0;
+    scrollbar-width: thin; /* Modern browsers */
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-color);
+    justify-content: space-between; /* Ensure proper spacing between cards */
+}
+
+.slider::-webkit-scrollbar {
+    height: 8px;
+}
+
+.slider::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-color);
+    border-radius: 4px;
+}
+
+.slider::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+
+
+/* Movie Cards */
+.movie-card {
+    flex: 0 0 calc((100% - (15px * 4)) / 5); /* Dynamic width for 5 cards with 15px gaps */
+    max-width: calc((100% - (15px * 4)) / 5); /* Ensure no overflow */
+    background: var(--card-background);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.movie-card img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.movie-card p {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--text-color);
+    font-size: 14px;
+    padding: 5px;
+    text-align: center;
+}
+
+/* Popup */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: var(--card-background);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    width: 90%;
+}
+
+.popup-body {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#popup-poster {
+    height: auto;
+    width: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.popup-details {
+    flex: 1;
+    line-height: 1.8;
+}
+
+.popup-details h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.close-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+/* Loading Dialog */
+.loading-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.80); /* Blackout overlay with 95% opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid rgba(255, 255, 255, 0.3); /* Light gray border */
+    border-top-color: var(--primary-color); /* Accent color for animation */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

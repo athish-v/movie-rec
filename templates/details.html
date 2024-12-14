@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ details[1] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>{{ details[1] }}</h1>
+    <img src="{{ details[0] }}" alt="Poster">
+    <p><strong>Overview:</strong> {{ details[3] }}</p>
+    <p><strong>Release Date:</strong> {{ details[4] }}</p>
+    <p><strong>Genres:</strong> {{ details[2] }}</p>
+    <p><strong>Director:</strong> {{ details[5] }}</p>
+    <p><strong>Cast:</strong> {{ details[6] }}</p>
+    <a href="/">Back to Home</a>
+</body>
+</html>
